@@ -92,15 +92,30 @@ export default function MySection(props: z.infer<typeof mySchema>) {
 // npm run build
 ```
 
-### System Variables
+### System Variables & TypeScript Types
+
+Smart CMS provides comprehensive TypeScript types for all shared props and page data:
 
 ```tsx
 import { usePage } from "@inertiajs/react";
+import type { InertiaSharedProps, PageProps } from "@/types";
 
-const { props: pageProps } = usePage();
-const logo = pageProps.logo;
-const companyName = pageProps.company_name;
+// Access shared props (logo, company_name, etc.)
+const { props } = usePage<InertiaSharedProps>();
+const logo = props.logo;
+const companyName = props.company_name;
+
+// Access page-specific props (page data, blocks, etc.)
+const { props } = usePage<PageProps>();
+const page = props.page;
+const blocks = props.blocks;
 ```
+
+**Key Features:**
+- ✅ Full TypeScript autocomplete for all props
+- ✅ Type-safe access to page data, logo, company info
+- ✅ Automatic localization (no manual handling needed)
+- ✅ SEO and meta data managed by CMS
 
 ### Using Components
 
@@ -150,10 +165,27 @@ import { KitLink, KitImage } from '@/components/kit';
 ## Workflow
 
 1. Create section file `resources/js/sections/MySection.tsx`
-2. Define Zod schema with `.meta()`
+2. Define Zod schema with `.meta()` (includes unique ID)
 3. Implement React component
 4. Run `npm run build`
-5. Section will appear in admin panel
+5. **Section automatically registers** and appears in admin panel
+
+### Automatic Features
+
+**🚀 Automatic Section Registration**
+- Sections register automatically when using `.meta()` with a unique ID
+- No manual registration required
+- Just define your schema and build
+
+**🌍 Automatic Localization**
+- Multi-language support handled automatically by Smart CMS
+- No need to manually detect or handle language switching
+- CMS serves the correct content based on URL
+
+**🎨 TypeScript Types**
+- Full type safety for all page props and shared data
+- Import types from `@/types` for autocomplete
+- Types for `InertiaSharedProps`, `PageProps`, `PageData`, and more
 
 ---
 
