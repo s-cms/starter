@@ -6,13 +6,29 @@ This guide serves as a comprehensive prompt for creating reusable sections in th
 
 This guide is designed for projects using:
 
-- **Smart CMS** - Block-based CMS with Zod schema validation
+- **Smart CMS** - Block-based CMS with Zod schema validation and automatic localization
 - **Laravel 12+** - Backend framework
 - **React** - Component library
 - **Inertia.js** - Server-side routing with SPA-like experience
 - **Tailwind CSS v4** - Utility-first CSS framework
 - **Zod** - TypeScript-first schema validation
 - **TypeScript** - Type safety
+
+### Important Smart CMS Features
+
+**🌍 Automatic Localization**
+Smart CMS handles multi-language support automatically. You don't need to:
+- Manually detect the user's language
+- Create separate routes for different languages
+- Handle language switching in your sections
+
+The CMS automatically:
+- Detects language from the URL
+- Serves the correct content for each language
+- Manages language switching and routing
+
+**📦 Automatic Section Registration**
+Sections are automatically registered when you use `.meta()` with a unique ID. No manual registration needed!
 
 ## Table of Contents
 1. [Understanding Sections](#understanding-sections)
@@ -39,8 +55,38 @@ Sections are **reusable page building blocks** that can be:
 ### How Sections Work
 
 1. **Define Schema** - Zod schema defines variables, defaults, and validation
-2. **Implement Component** - React component receives validated data as props
-3. **Use** - Section appears in admin panel for page building
+2. **Add .meta() with unique ID** - Section automatically registers in global registry
+3. **Implement Component** - React component receives validated data as props
+4. **Build** - Run `npm run build` to compile
+5. **Use** - Section automatically appears in admin panel for page building
+
+### Automatic Section Registration
+
+Sections are **automatically registered** when you use `.meta()` on your schema with a unique ID. You don't need to manually register sections anywhere - Smart CMS handles this automatically.
+
+```tsx
+// Define your schema with .meta()
+const mySchema = z.object({
+  title: z.string().describe("Title").default("Default Title")
+}).meta({
+  id: "MyUniqueSection",     // ✅ Unique ID - REQUIRED for registration
+  title: "My Section",        // Display name in admin panel
+  description: "Description", // Help text for admin
+  component: MySection        // React component to render
+});
+
+// That's it! No manual registration needed.
+// After `npm run build`, this section will automatically:
+// 1. Be registered in the global section registry
+// 2. Be available in the admin panel
+// 3. Be ready to use on any page
+```
+
+**Important:**
+- The `id` in `.meta()` **must be unique** across all sections
+- If two sections share the same ID, the last one will overwrite the first
+- The `id` is used to identify the section in the database and admin panel
+- Changing the `id` later will break existing section instances on pages
 
 ### Key Principles
 
@@ -366,41 +412,215 @@ popular_items: PopularItems.optional(),
 
 ---
 
-## System Variables
+## System Variables & Inertia Shared Props
 
-System variables are automatically available via `usePage()` and should **NOT** be included in your schema.
+System variables are automatically available via Inertia's `usePage()` hook and should **NOT** be included in your section schema. These props are globally available on every page.
 
-### Available System Variables
+### TypeScript Support
+
+For full type safety and autocomplete, import the types from `@/types`:
 
 ```tsx
 import { usePage } from "@inertiajs/react";
+import type { InertiaSharedProps, PageProps } from "@/types";
 
 export default function MySection(props: z.infer<typeof mySchema>) {
-  const { props: pageProps } = usePage();
+  // Option 1: Use InertiaSharedProps for shared data only
+  const { props: pageProps } = usePage<InertiaSharedProps>();
 
-  // Available system variables:
-  const logo = pageProps.logo as z.infer<typeof ImageSchema>;
-  const companyName = pageProps.company_name as string;
-  const hostname = pageProps.hostname as string;
-  const host = pageProps.host as z.infer<typeof LinkSchema>;
-  const languages = pageProps.languages as any[];
+  // Option 2: Use PageProps for full page data (includes shared props + page-specific data)
+  const { props } = usePage<PageProps>();
 
-  // Current page data:
-  const page = pageProps.page as any;
-  const pageContent = page?.content as string;       // HTML content
-  const pageHeading = page?.heading as string;       // Page title
-  const pageImage = page?.image as z.infer<typeof ImageSchema>;
-  const pageBanner = page?.banner as z.infer<typeof ImageSchema>;
+  // Now you get full autocomplete for all available props!
+  const logo = props.logo; // Typed as ImageData
+  const companyName = props.company_name; // Typed as string
+  const page = props.page; // Typed as PageData
+}
+```
+
+### Available Inertia Shared Props
+
+These props are available globally via `usePage<InertiaSharedProps>()`:
+
+#### Site Information
+```tsx
+const { props } = usePage<InertiaSharedProps>();
+
+// Company/site details
+props.company_name    // string - Company name
+props.hostname        // string - Domain hostname
+props.host            // HostLink - Full host link object with URL
+props.logo            // ImageData - Site logo
+props.default_image   // ImageData - Fallback image
+```
+
+#### Localization (Handled Automatically)
+```tsx
+// Smart CMS handles localization automatically
+// These props are available but you typically don't need to use them directly
+props.locale          // string - Current locale code (e.g., "en", "es")
+props.locales         // LanguageRoute[] - Available language routes
+props.translations    // Record<string, string> - Translation strings
+
+// ⚠️ NOTE: You don't need to manually handle localization in your sections!
+// Smart CMS automatically detects and serves the correct language based on the URL
+```
+
+#### SEO & Meta (Managed by CMS)
+```tsx
+props.meta            // MetaData - SEO tags, title, description, microdata
+props.meta.title      // string - Page title
+props.meta.description // string - Page description
+props.meta.canonical  // string - Canonical URL
+props.meta.tags       // Array - Meta tags for social sharing
+```
+
+#### Authentication (Optional)
+```tsx
+props.auth?.user      // User object if authenticated
+props.auth?.user?.id  // number
+props.auth?.user?.name // string
+props.auth?.user?.email // string
+```
+
+#### Flash Messages (Optional)
+```tsx
+props.flash?.success  // string - Success message
+props.flash?.error    // string - Error message
+props.flash?.warning  // string - Warning message
+props.flash?.info     // string - Info message
+```
+
+### Available Page-Specific Props
+
+Use `usePage<PageProps>()` to access both shared props AND page-specific data:
+
+```tsx
+import { usePage } from "@inertiajs/react";
+import type { PageProps } from "@/types";
+
+export default function MySection(props: z.infer<typeof mySchema>) {
+  const { props } = usePage<PageProps>();
+
+  // Current page data (fully typed)
+  const page = props.page;              // PageData
+  const pageContent = page.content;     // string - HTML content
+  const pageHeading = page.heading;     // string - Page title/heading
+  const pageImage = page.image;         // ImageData | null
+  const pageBanner = page.banner;       // ImageData | null
+  const pageUrl = page.url;             // string - Full URL
+  const pageSlug = page.slug;           // string - URL slug
+
+  // Blocks/sections on this page
+  const blocks = props.blocks;          // BlockData[] - All blocks to render
+
+  // Related pages (if available)
+  const categories = props.categories;  // Paginated categories
+  const items = props.items;            // Paginated items
 
   return (
     <section>
-      {logo?.source && <img src={logo.source} alt={companyName} />}
+      {/* Use shared props */}
+      {props.logo?.source && (
+        <img src={props.logo.source} alt={props.company_name} />
+      )}
+
+      {/* Use page-specific props */}
       <h1>{pageHeading}</h1>
-      <div dangerouslySetInnerHTML={{ __html: pageContent }} />
+      {pageContent && (
+        <div dangerouslySetInnerHTML={{ __html: pageContent }} />
+      )}
+
+      {/* Render categories */}
+      {categories?.data.map((category) => (
+        <a key={category.id} href={category.url}>
+          {category.name}
+        </a>
+      ))}
     </section>
   );
 }
 ```
+
+### Common Patterns
+
+#### Using Logo and Company Name
+```tsx
+import { usePage } from "@inertiajs/react";
+import type { InertiaSharedProps } from "@/types";
+
+export default function Header(props: z.infer<typeof headerSchema>) {
+  const { props } = usePage<InertiaSharedProps>();
+
+  return (
+    <header>
+      <a href="/">
+        <img
+          src={props.logo.source}
+          alt={props.company_name}
+          width={props.logo.width}
+          height={props.logo.height}
+        />
+      </a>
+    </header>
+  );
+}
+```
+
+#### Accessing Current Page Data
+```tsx
+import { usePage } from "@inertiajs/react";
+import type { PageProps } from "@/types";
+
+export default function PageHeader(props: z.infer<typeof pageHeaderSchema>) {
+  const { props } = usePage<PageProps>();
+  const { page } = props;
+
+  return (
+    <section>
+      {/* Page banner image */}
+      {page.banner?.source && (
+        <img src={page.banner.source} alt={page.heading} />
+      )}
+
+      {/* Page heading */}
+      <h1>{page.heading}</h1>
+
+      {/* Page summary */}
+      {page.summary && <p>{page.summary}</p>}
+    </section>
+  );
+}
+```
+
+#### Rendering Page Content
+```tsx
+import { usePage } from "@inertiajs/react";
+import type { PageProps } from "@/types";
+
+export default function ContentSection(props: z.infer<typeof contentSchema>) {
+  const { props } = usePage<PageProps>();
+
+  return (
+    <section>
+      {props.page.content && (
+        <div
+          className="prose"
+          dangerouslySetInnerHTML={{ __html: props.page.content }}
+        />
+      )}
+    </section>
+  );
+}
+```
+
+### Important Notes
+
+1. **Don't include system variables in your schema** - They're automatically available via `usePage()`
+2. **Always use TypeScript types** - Import `InertiaSharedProps` or `PageProps` for autocomplete
+3. **Check for optional fields** - Many page props like `content`, `banner`, `image` can be null
+4. **Localization is automatic** - You don't need to manually handle language switching
+5. **SEO is managed by CMS** - Meta tags, titles, and descriptions are handled automatically
 
 ---
 
