@@ -6172,12 +6172,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/s-cms/kit.git",
-                "reference": "0771a111a51c54e0e4c1fb4d35ee7209ff331f0e"
+                "reference": "dfd9ed79b15b7cbd78c3507749ec895bafbb84b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/s-cms/kit/zipball/0771a111a51c54e0e4c1fb4d35ee7209ff331f0e",
-                "reference": "0771a111a51c54e0e4c1fb4d35ee7209ff331f0e",
+                "url": "https://api.github.com/repos/s-cms/kit/zipball/dfd9ed79b15b7cbd78c3507749ec895bafbb84b9",
+                "reference": "dfd9ed79b15b7cbd78c3507749ec895bafbb84b9",
                 "shasum": ""
             },
             "require": {
@@ -6261,7 +6261,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-02T14:57:29+00:00"
+            "time": "2025-11-03T19:19:42+00:00"
         },
         {
             "name": "smart-cms/lang",
@@ -6844,12 +6844,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/s-cms/template-builder.git",
-                "reference": "90db6d81db746aeae266085cb16c0cda8a4d4161"
+                "reference": "f5bed2619b10feb589ecad48fb7a9b308063f631"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/s-cms/template-builder/zipball/90db6d81db746aeae266085cb16c0cda8a4d4161",
-                "reference": "90db6d81db746aeae266085cb16c0cda8a4d4161",
+                "url": "https://api.github.com/repos/s-cms/template-builder/zipball/f5bed2619b10feb589ecad48fb7a9b308063f631",
+                "reference": "f5bed2619b10feb589ecad48fb7a9b308063f631",
                 "shasum": ""
             },
             "require": {
@@ -6908,7 +6908,7 @@
                 "issues": "https://github.com/smart-cms/template-builder/issues",
                 "source": "https://github.com/smart-cms/template-builder"
             },
-            "time": "2025-09-24T11:17:45+00:00"
+            "time": "2025-11-03T19:13:58+00:00"
         },
         {
             "name": "smart-cms/theme",
