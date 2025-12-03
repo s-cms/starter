@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use SmartCms\Kit\Models\Admin;
 use SmartCms\Kit\Models\Page;
+use SmartCms\Kit\Support\Contracts\PageStatus;
 use SmartCms\Lang\Database\Factories\LanguageFactory;
 use SmartCms\Lang\Models\Language;
 use SmartCms\Settings\Models\Setting;
@@ -32,7 +33,7 @@ class DatabaseSeeder extends Seeder
                 'en' => 'Home',
             ],
             'slug' => '',
-            'status' => true,
+            'status' => PageStatus::Published,
             'is_system' => true,
         ]);
         $languages = Language::all();
