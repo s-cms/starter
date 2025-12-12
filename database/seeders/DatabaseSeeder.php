@@ -18,6 +18,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        LanguageSeeder::class;
+        LanguageFactory::new()->create([
+            'name' => 'Ukrainian',
+            'slug' => 'uk',
+            'locale' => 'uk_UA',
+            'is_default' => false,
+            'is_admin_active' => false,
+            'is_frontend_active' => false,
+        ]);
+        LanguageFactory::new()->create([
+            'name' => 'Polish',
+            'slug' => 'pl',
+            'locale' => 'pl_PL',
+            'is_default' => false,
+            'is_admin_active' => false,
+            'is_frontend_active' => false,
+        ]);
+        LanguageFactory::new()->create([
+            'name' => 'German',
+            'slug' => 'de',
+            'locale' => 'de_DE',
+            'is_default' => false,
+            'is_admin_active' => false,
+            'is_frontend_active' => false,
+        ]);
         LanguageFactory::new()->create([
             'name' => 'English',
             'slug' => 'en',
