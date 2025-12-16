@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "plugin-dev@claude-code-plugins": true,
+    "feature-dev@claude-code-plugins": true
+  }
+}
