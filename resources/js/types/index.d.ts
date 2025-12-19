@@ -1,5 +1,5 @@
-import type z from "zod";
 import type { ImageSchema, LinkSchema } from "@/sections/types";
+import type z from "zod";
 
 /**
  * Type definitions for Smart CMS page data and Inertia.js shared props
