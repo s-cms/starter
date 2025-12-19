@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Inertia\Middleware;
+use SmartCms\Kit\Http\Resources\MediaResource;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,7 +38,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $file = lang_path(App::currentLocale().'.json');
+        $file = lang_path(App::currentLocale() . '.json');
 
         return [
             ...parent::share($request),
@@ -54,6 +55,8 @@ class HandleInertiaRequests extends Middleware
             'locale' => App::getLocale(),
             'locales' => language_routes(),
             'translations' => File::exists($file) ? File::json($file) : [],
+            'favicon' => MediaResource::make(app('s')->get('branding.favicon'))->toArray(request: $request)['src'],
+            'apple_touch_icon' => MediaResource::make(app('s')->get('branding.apple_touch_icon'))->toArray(request: $request)['src'],
             'meta' => [
                 'microdata' => app('microdata')->get(),
                 'tags' => [
@@ -67,11 +70,11 @@ class HandleInertiaRequests extends Middleware
                     ],
                     [
                         'name' => 'og:title',
-                        'content' => ($titleMod['prefix'] ?? '').app('seo')->title().($titleMod['suffix'] ?? ''),
+                        'content' => ($titleMod['prefix'] ?? '') . app('seo')->title() . ($titleMod['suffix'] ?? ''),
                     ],
                     [
                         'name' => 'og:description',
-                        'content' => ($descriptionMod['prefix'] ?? '').app('seo')->description().($descriptionMod['suffix'] ?? ''),
+                        'content' => ($descriptionMod['prefix'] ?? '') . app('seo')->description() . ($descriptionMod['suffix'] ?? ''),
                     ],
                     [
                         'name' => 'og:url',
@@ -91,15 +94,15 @@ class HandleInertiaRequests extends Middleware
                     ],
                     [
                         'name' => 'twitter:site',
-                        'content' => '@'.company_name(),
+                        'content' => '@' . company_name(),
                     ],
                     [
                         'name' => 'twitter:description',
-                        'content' => ($descriptionMod['prefix'] ?? '').app('seo')->description().($descriptionMod['suffix'] ?? ''),
+                        'content' => ($descriptionMod['prefix'] ?? '') . app('seo')->description() . ($descriptionMod['suffix'] ?? ''),
                     ],
                     [
                         'name' => 'twitter:title',
-                        'content' => ($titleMod['prefix'] ?? '').app('seo')->title().($titleMod['suffix'] ?? ''),
+                        'content' => ($titleMod['prefix'] ?? '') . app('seo')->title() . ($titleMod['suffix'] ?? ''),
                     ],
                     [
                         'name' => 'twitter:image',

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Pages\FindPageBySegmentsAction;
+use App\Actions\Pages\GetPageRenderDataAction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use SmartCms\Kit\Http\Resources\FrontPageResource;
-use SmartCms\Kit\Models\Block;
-use SmartCms\Kit\Models\Page;
 
 class PageController extends Controller
 {
     public $limit = 3;
+
+    public function __construct(
+        private readonly FindPageBySegmentsAction $findPageAction,
+        private readonly GetPageRenderDataAction $getPageDataAction
+    ) {}
 
     public function handle(Request $request)
     {
@@ -25,39 +29,16 @@ class PageController extends Controller
             return abort(404);
         }
 
-        $page = $this->findPage($segments);
+        $page = $this->findPageAction->handle($segments);
         abort_if(! $page, 404);
-        $blocks = $page->activeBlocks()->get()->map(fn (Block $block): array => [
-            'id' => $block->type,
-            'data' => $block->transformedData(),
-        ]);
 
-        return Inertia::render('page', [
-            'categories' => $page->children()->paginate(12)->through(fn (Page $category) => FrontPageResource::make($category)->toArray(request: request())),
-            'items' => $page->children()->paginate(12)->through(fn (Page $item) => FrontPageResource::make($item)->toArray(request: request())),
-            'page' => FrontPageResource::make($page)->toArray(request: $request),
-            'blocks' => [...Block::getHeaderBlocks(), ...$blocks->toArray(), ...Block::getFooterBlocks()],
-            'meta' => [
-                'title' => $page->title,
-                'description' => $page->description,
-            ],
-        ]);
-    }
+        $data = $this->getPageDataAction->handle($page, $request);
 
-    protected function findPage(array $segments, $parentId = null)
-    {
-        $slug = array_shift($segments);
-        $page = Page::query()->where('slug', $slug ?? '')
-            ->where('parent_id', $parentId)
-            ->first();
-        if (! $page) {
-            return null;
-        }
-
-        if ($segments !== []) {
-            return $this->findPage($segments, $page->id);
-        }
-
-        return $page;
+        return Inertia::render('page', $data)
+            ->toResponse($request)
+            ->withHeaders([
+                'X-Robots-Tag' => $page->is_index ? 'index, follow' : 'noindex, nofollow',
+                'Content-Language' => current_lang(),
+            ]);
     }
 }
