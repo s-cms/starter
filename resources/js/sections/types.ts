@@ -20,134 +20,6 @@ const mockLink = {
     url: "/sample",
 }
 
-const mockPage = {
-    id: 1,
-    name: "Sample Page",
-    slug: "sample-page",
-    url: "/sample-page",
-    image: mockImage,
-    banner: mockImage,
-    title: "Sample Page Title",
-    heading: "Sample Heading",
-    summary: "This is a sample page summary",
-    content: "<p>Sample page content</p>",
-    description: "Sample page description",
-    keywords: "sample, page, test",
-    depth: 1,
-    published_at: "2024-01-01 12:00:00",
-    views: 100,
-    children_count: 0,
-    breadcrumbs: [
-        {
-            name: "Home",
-            url: {
-                title: "Home",
-                is_external: false,
-                url: "/",
-            },
-        },
-    ],
-    settings: {},
-    layout_settings: {},
-    is_root: false,
-}
-
-const mockPhones = [
-    {
-        title: "+1 234 567 8900",
-        type: "tel",
-        is_external: false,
-        icon: "phone",
-        url: "tel:+12345678900",
-    },
-    {
-        title: "+1 234 567 8901",
-        type: "tel",
-        is_external: false,
-        icon: "phone",
-        url: "tel:+12345678901",
-    },
-]
-
-const mockEmails = [
-    {
-        title: "contact@example.com",
-        type: "email",
-        is_external: false,
-        icon: "mail",
-        url: "mailto:contact@example.com",
-    },
-    {
-        title: "support@example.com",
-        type: "email",
-        is_external: false,
-        icon: "mail",
-        url: "mailto:support@example.com",
-    },
-]
-
-const mockSocials = [
-    {
-        name: "Facebook",
-        url: {
-            title: "Facebook",
-            type: "link",
-            is_external: true,
-            icon: "facebook",
-            url: "https://facebook.com/example",
-        },
-        icon: "facebook",
-        image: {
-            alt: "Facebook",
-            src: "/images/facebook-icon.png",
-            srcset: "/images/facebook-icon.png 1x, /images/facebook-icon@2x.png 2x",
-            width: 32,
-            height: 32,
-        },
-    },
-    {
-        name: "Twitter",
-        url: {
-            title: "Twitter",
-            type: "link",
-            is_external: true,
-            icon: "twitter",
-            url: "https://twitter.com/example",
-        },
-        icon: "twitter",
-        image: {
-            alt: "Twitter",
-            src: "/images/twitter-icon.png",
-            srcset: "/images/twitter-icon.png 1x, /images/twitter-icon@2x.png 2x",
-            width: 32,
-            height: 32,
-        },
-    },
-]
-
-const mockMenu = [
-    {
-        title: "Home",
-        url: "/",
-        icon: "home",
-    },
-    {
-        title: "About",
-        url: "/about",
-        icon: "info",
-    },
-]
-
-const mockPages = [
-    mockPage,
-    {
-        ...mockPage,
-        id: 2,
-        name: "Another Page",
-        slug: "another-page",
-        url: "/another-page",
-    },
-]
 
 // ============================================================================
 // HTTP Resources Schemas
@@ -232,7 +104,7 @@ const PhonesSchema = z.array(linkObjectSchema)
     .meta({
         inputType: "phones",
     })
-    .default(mockPhones)
+    .default([])
 
 /**
  * Emails schema
@@ -243,7 +115,7 @@ const EmailsSchema = z.array(linkObjectSchema)
     .meta({
         inputType: "emails",
     })
-    .default(mockEmails)
+    .default([])
 
 /**
  * Socials schema
@@ -261,7 +133,7 @@ const SocialsSchema = z.array(
     .meta({
         inputType: "socials",
     })
-    .default(mockSocials)
+    .default([])
 
 /**
  * Menu schema
@@ -280,7 +152,7 @@ const MenuSchema = z.array(
     .meta({
         inputType: "menu",
     })
-    .default(mockMenu)
+    .default([])
 
 /**
  * PopularCategories schema
@@ -291,7 +163,7 @@ const PopularCategoriesSchema = z.array(PageSchema)
     .meta({
         inputType: "popular_categories",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * RandomCategories schema
@@ -302,7 +174,7 @@ const RandomCategoriesSchema = z.array(PageSchema)
     .meta({
         inputType: "random_categories",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * LatestCategories schema
@@ -313,7 +185,7 @@ const LatestCategoriesSchema = z.array(PageSchema)
     .meta({
         inputType: "latest_categories",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * PopularItems schema
@@ -324,7 +196,7 @@ const PopularItemsSchema = z.array(PageSchema)
     .meta({
         inputType: "popular_items",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * RandomItems schema
@@ -335,7 +207,7 @@ const RandomItemsSchema = z.array(PageSchema)
     .meta({
         inputType: "random_items",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * LatestItems schema
@@ -346,7 +218,7 @@ const LatestItemsSchema = z.array(PageSchema)
     .meta({
         inputType: "latest_items",
     })
-    .default(mockPages)
+    .default([])
 
 /**
  * Link schema
@@ -379,6 +251,7 @@ const ImageTypeSchema = ImageSchema
     .meta({
         inputType: "image",
     })
+    .default(mockImage)
 
 /**
  * File schema
