@@ -6882,12 +6882,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/s-cms/kit.git",
-                "reference": "8e47902ab363cb454940a85f0453eb27051a4492"
+                "reference": "182b875d3549a0db7bb70ebc8929091daf5de5b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/s-cms/kit/zipball/8e47902ab363cb454940a85f0453eb27051a4492",
-                "reference": "8e47902ab363cb454940a85f0453eb27051a4492",
+                "url": "https://api.github.com/repos/s-cms/kit/zipball/182b875d3549a0db7bb70ebc8929091daf5de5b7",
+                "reference": "182b875d3549a0db7bb70ebc8929091daf5de5b7",
                 "shasum": ""
             },
             "require": {
@@ -6976,7 +6976,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-24T12:33:20+00:00"
+            "time": "2025-12-25T15:48:43+00:00"
         },
         {
             "name": "smart-cms/lang",

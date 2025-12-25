@@ -30,11 +30,11 @@ const mockLink = {
  * Used for image/media data in Inertia responses
  */
 const ImageSchema = z.object({
-    alt: z.string(),
-    src: z.string(),
-    srcset: z.string(),
-    width: z.number(),
-    height: z.number(),
+    alt: z.string().optional(),
+    src: z.string().optional(),
+    srcset: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
 })
     .describe("Image")
     .meta({
@@ -71,12 +71,12 @@ const PageSchema = z.object({
     content: z.string().nullable(),
     description: z.string().nullable(),
     keywords: z.string().nullable(),
-    depth: z.number(),
     published_at: z.string().nullable(),
     views: z.number(),
-    children_count: z.number().optional(),
     breadcrumbs: z.array(breadcrumbItemSchema).optional(),
-    is_root: z.boolean().optional(),
+    settings: z.any().optional(),
+    meta: z.any().optional(),
+    tags: z.array(z.string()).optional(),
 }).passthrough()
     .describe("Page Resource")
 
