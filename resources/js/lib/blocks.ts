@@ -16,6 +16,26 @@ export function exportToJson(): string {
   return JSON.stringify(schemas, null, 2);
 }
 
+function BlockPlaceholder({ id, reason }: { id: string; reason: string }) {
+  return React.createElement(
+    "section",
+    {
+      className:
+        "container mx-auto my-8 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 px-4 py-10 text-center",
+    },
+    React.createElement(
+      "p",
+      { className: "font-semibold text-foreground text-lg" },
+      "Block under construction"
+    ),
+    React.createElement(
+      "p",
+      { className: "mt-1 text-muted-foreground text-sm" },
+      `"${id}" — ${reason}`
+    )
+  );
+}
+
 export function renderBlock(id: string, data?: unknown) {
   // biome-ignore lint: schema generation
   const entry = z.globalRegistry._idmap.get(id) as z.ZodType<any>;
@@ -28,7 +48,10 @@ export function renderBlock(id: string, data?: unknown) {
         availableComponents: Object.keys(z.globalRegistry._idmap),
       });
     }
-    return null;
+    return React.createElement(BlockPlaceholder, {
+      id,
+      reason: "section component not registered",
+    });
   }
   const component = entry.meta()?.component || null;
   if (!component) {
@@ -39,14 +62,14 @@ export function renderBlock(id: string, data?: unknown) {
         id,
       });
     }
-    return null;
+    return React.createElement(BlockPlaceholder, {
+      id,
+      reason: "component missing from schema meta",
+    });
   }
   const safeData = entry.safeParse(data);
-  // if(typeof data != entry.def.type){
-
-  // }
   if (!safeData.success) {
-    const errorMessage = "Something went wrong";
+    const errorMessage = "Block data failed schema validation";
     if (import.meta.env.DEV) {
       // biome-ignore lint: for development, uses only in vite
       console.error(`[BlockRenderer] ${errorMessage}`, {
@@ -55,7 +78,10 @@ export function renderBlock(id: string, data?: unknown) {
         actualData: data,
       });
     }
-    return null;
+    return React.createElement(BlockPlaceholder, {
+      id,
+      reason: "missing or invalid content for this locale",
+    });
   }
   return React.createElement(
     component as React.ComponentType<unknown>,
