@@ -35,11 +35,12 @@
     @viteReactRefresh
     @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
     @inertiaHead
+    <x-kit-gtm-head />
 </head>
 
 <body class="font-sans antialiased">
+    <x-kit-gtm-body />
     @inertia
-    <x-kit-gtm />
 </body>
 
 </html>

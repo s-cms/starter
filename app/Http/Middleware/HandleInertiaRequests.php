@@ -55,8 +55,8 @@ class HandleInertiaRequests extends Middleware
             'locale' => App::getLocale(),
             'locales' => language_routes(),
             'translations' => File::exists($file) ? File::json($file) : [],
-            'favicon' => MediaResource::make(app('s')->get('branding.favicon'))->toArray(request: $request)['src'],
-            'apple_touch_icon' => MediaResource::make(app('s')->get('branding.apple_touch_icon'))->toArray(request: $request)['src'],
+            'favicon' => favicon(),
+            'apple_touch_icon' => MediaResource::make(app('s')->get('branding.apple_touch_icon'))->toArray(request: $request)['src'] ?: no_image_placeholder(),
             'meta' => [
                 'microdata' => app('microdata')->get(),
                 'tags' => [

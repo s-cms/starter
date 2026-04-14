@@ -155,68 +155,13 @@ const MenuSchema = z.array(
     .default([])
 
 /**
- * PopularCategories schema
+ * PagesList schema (universal — replaces Latest/Popular/Random + Categories/Items)
  * Returns array of Page resources
  */
-const PopularCategoriesSchema = z.array(PageSchema)
-    .describe("Popular Categories")
+const PagesListSchema = z.array(PageSchema)
+    .describe("Pages List")
     .meta({
-        inputType: "popular_categories",
-    })
-    .default([])
-
-/**
- * RandomCategories schema
- * Returns array of Page resources
- */
-const RandomCategoriesSchema = z.array(PageSchema)
-    .describe("Random Categories")
-    .meta({
-        inputType: "random_categories",
-    })
-    .default([])
-
-/**
- * LatestCategories schema
- * Returns array of Page resources
- */
-const LatestCategoriesSchema = z.array(PageSchema)
-    .describe("Latest Categories")
-    .meta({
-        inputType: "latest_categories",
-    })
-    .default([])
-
-/**
- * PopularItems schema
- * Returns array of Page resources
- */
-const PopularItemsSchema = z.array(PageSchema)
-    .describe("Popular Items")
-    .meta({
-        inputType: "popular_items",
-    })
-    .default([])
-
-/**
- * RandomItems schema
- * Returns array of Page resources
- */
-const RandomItemsSchema = z.array(PageSchema)
-    .describe("Random Items")
-    .meta({
-        inputType: "random_items",
-    })
-    .default([])
-
-/**
- * LatestItems schema
- * Returns array of Page resources
- */
-const LatestItemsSchema = z.array(PageSchema)
-    .describe("Latest Items")
-    .meta({
-        inputType: "latest_items",
+        inputType: "pages_list",
     })
     .default([])
 
@@ -233,14 +178,17 @@ const LinkSchema = linkObjectSchema
 
 /**
  * Icon schema
- * Returns icon identifier string (e.g., "lucide-iconname")
+ * Returns icon identifier string (e.g., "facebook", "arrow-right") or null
+ * when no icon is selected. Names map directly to lucide-react components
+ * after kebab → PascalCase conversion.
  */
 const IconSchema = z.string()
+    .nullable()
     .describe("Icon")
     .meta({
         inputType: "icon",
     })
-    .default("lucide-bug")
+    .default(null)
 
 /**
  * Image schema (variable type)
@@ -286,12 +234,7 @@ const Schemas = {
     emails: EmailsSchema,
     socials: SocialsSchema,
     menu: MenuSchema,
-    popular_categories: PopularCategoriesSchema,
-    random_categories: RandomCategoriesSchema,
-    latest_categories: LatestCategoriesSchema,
-    popular_items: PopularItemsSchema,
-    random_items: RandomItemsSchema,
-    latest_items: LatestItemsSchema,
+    pages_list: PagesListSchema,
     link: LinkSchema,
     icon: IconSchema,
     image: ImageTypeSchema,
@@ -309,8 +252,8 @@ export { ImageSchema, PageSchema }
 // Variable Types
 export {
     EmailsSchema, FileSchema, IconSchema,
-    ImageTypeSchema, KeyValueSchema, LatestCategoriesSchema, LatestItemsSchema,
-    LinkSchema, MenuSchema, PhonesSchema, PopularCategoriesSchema, PopularItemsSchema, RandomCategoriesSchema, RandomItemsSchema, SocialsSchema
+    ImageTypeSchema, KeyValueSchema,
+    LinkSchema, MenuSchema, PagesListSchema, PhonesSchema, SocialsSchema
 }
 
 // Registry
@@ -323,12 +266,7 @@ export type PhonesType = z.infer<typeof PhonesSchema>
 export type EmailsType = z.infer<typeof EmailsSchema>
 export type SocialsType = z.infer<typeof SocialsSchema>
 export type MenuType = z.infer<typeof MenuSchema>
-export type PopularCategories = z.infer<typeof PopularCategoriesSchema>
-export type RandomCategories = z.infer<typeof RandomCategoriesSchema>
-export type LatestCategories = z.infer<typeof LatestCategoriesSchema>
-export type PopularItems = z.infer<typeof PopularItemsSchema>
-export type RandomItems = z.infer<typeof RandomItemsSchema>
-export type LatestItems = z.infer<typeof LatestItemsSchema>
+export type PagesList = z.infer<typeof PagesListSchema>
 export type LinkType = z.infer<typeof LinkSchema>
 export type IconType = z.infer<typeof IconSchema>
 export type ImageTypeVariable = ImageType // Same type as ImageType since structure is identical
