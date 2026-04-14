@@ -221,6 +221,17 @@ const LatestItemsSchema = z.array(PageSchema)
     .default([])
 
 /**
+ * PagesList schema (universal — replaces Latest/Popular/Random + Categories/Items)
+ * Returns array of Page resources
+ */
+const PagesListSchema = z.array(PageSchema)
+    .describe("Pages List")
+    .meta({
+        inputType: "pages_list",
+    })
+    .default([])
+
+/**
  * Link schema
  * Returns a single link object
  */
@@ -233,14 +244,17 @@ const LinkSchema = linkObjectSchema
 
 /**
  * Icon schema
- * Returns icon identifier string (e.g., "lucide-iconname")
+ * Returns icon identifier string (e.g., "facebook", "arrow-right") or null
+ * when no icon is selected. Names map directly to lucide-react components
+ * after kebab → PascalCase conversion.
  */
 const IconSchema = z.string()
+    .nullable()
     .describe("Icon")
     .meta({
         inputType: "icon",
     })
-    .default("lucide-bug")
+    .default(null)
 
 /**
  * Image schema (variable type)
@@ -292,6 +306,7 @@ const Schemas = {
     popular_items: PopularItemsSchema,
     random_items: RandomItemsSchema,
     latest_items: LatestItemsSchema,
+    pages_list: PagesListSchema,
     link: LinkSchema,
     icon: IconSchema,
     image: ImageTypeSchema,
@@ -310,7 +325,7 @@ export { ImageSchema, PageSchema }
 export {
     EmailsSchema, FileSchema, IconSchema,
     ImageTypeSchema, KeyValueSchema, LatestCategoriesSchema, LatestItemsSchema,
-    LinkSchema, MenuSchema, PhonesSchema, PopularCategoriesSchema, PopularItemsSchema, RandomCategoriesSchema, RandomItemsSchema, SocialsSchema
+    LinkSchema, MenuSchema, PagesListSchema, PhonesSchema, PopularCategoriesSchema, PopularItemsSchema, RandomCategoriesSchema, RandomItemsSchema, SocialsSchema
 }
 
 // Registry
@@ -329,6 +344,7 @@ export type LatestCategories = z.infer<typeof LatestCategoriesSchema>
 export type PopularItems = z.infer<typeof PopularItemsSchema>
 export type RandomItems = z.infer<typeof RandomItemsSchema>
 export type LatestItems = z.infer<typeof LatestItemsSchema>
+export type PagesList = z.infer<typeof PagesListSchema>
 export type LinkType = z.infer<typeof LinkSchema>
 export type IconType = z.infer<typeof IconSchema>
 export type ImageTypeVariable = ImageType // Same type as ImageType since structure is identical
